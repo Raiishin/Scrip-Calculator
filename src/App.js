@@ -1,6 +1,16 @@
 import "./App.css";
 import React, { useState } from "react";
-const { TextField, Grid, Button, Table, TableHead, TableRow, TableCell, TableBody } = require("@material-ui/core");
+const {
+  TextField,
+  Grid,
+  Button,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TablePagination,
+} = require("@material-ui/core");
 const { calculateAvgScripCost, calculateYield, calculateNewAvgCost } = require("./logic/helpers");
 
 function App() {
@@ -38,7 +48,7 @@ function App() {
   }
 
   const calculateNumberOfSharesForScrip = () => {
-    for (let i = 0.5; i <= 30; i = i + 0.5) {
+    for (let i = 0.5; i <= 100; i = i + 0.5) {
       let scripShares = Math.round(i); // Number is rounded up
       let sharesForScrip = Math.round((i * scripPrice) / DPS);
       let scripCost = parseFloat((sharesForScrip * DPS).toFixed(2));
@@ -125,7 +135,7 @@ function App() {
           <Grid container style={{ padding: 5 }}>
             <Grid container item xs={2}>
               <TextField
-                label="Dividend Per Share"
+                label="Declared Dividend Per Share"
                 id="DPS"
                 variant="outlined"
                 onChange={(e) => {
