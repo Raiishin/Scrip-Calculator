@@ -86,7 +86,8 @@ function App() {
           <Grid container style={{ padding: 5 }}>
             <Grid container item xs={2}>
               <TextField
-                label="Expected Forward DPS"
+                label="Expected Forward DPS (Annual)"
+                style={{ width: 270 }}
                 id="expectedForwardDPS"
                 variant="outlined"
                 onChange={(e) => {
@@ -99,6 +100,7 @@ function App() {
             <Grid container item xs={2}>
               <TextField
                 label="Shares Currently Held"
+                style={{ width: 270 }}
                 id="sharesOutstanding"
                 variant="outlined"
                 onChange={(e) => {
@@ -109,6 +111,7 @@ function App() {
             <Grid container item xs={2}>
               <TextField
                 label="Average Cost Per Share"
+                style={{ width: 270 }}
                 id="avgCostPerShare"
                 variant="outlined"
                 onChange={(e) => {
@@ -124,6 +127,7 @@ function App() {
             <Grid container item xs={2}>
               <TextField
                 label="Scrip Issue Price"
+                style={{ width: 270 }}
                 id="scripPrice"
                 variant="outlined"
                 onChange={(e) => {
@@ -136,6 +140,7 @@ function App() {
             <Grid container item xs={2}>
               <TextField
                 label="Declared Dividend Per Share"
+                style={{ width: 270 }}
                 id="DPS"
                 variant="outlined"
                 onChange={(e) => {
