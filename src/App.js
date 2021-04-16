@@ -84,10 +84,10 @@ function App() {
       <div style={{ padding: 20 }}>
         <Grid container spacing={1}>
           <Grid container style={{ padding: 5 }}>
-            <Grid container item xs={2}>
+            <Grid container item xl={2} xs={4}>
               <TextField
                 label="Expected Forward DPS (Annual)"
-                style={{ width: 270 }}
+                defaultValue=" "
                 id="expectedForwardDPS"
                 variant="outlined"
                 onChange={(e) => {
@@ -97,10 +97,10 @@ function App() {
             </Grid>
           </Grid>
           <Grid container style={{ padding: 5 }}>
-            <Grid container item xs={2}>
+            <Grid container item xl={2} xs={4}>
               <TextField
                 label="Shares Currently Held"
-                style={{ width: 270 }}
+                defaultValue=" "
                 id="sharesOutstanding"
                 variant="outlined"
                 onChange={(e) => {
@@ -108,10 +108,10 @@ function App() {
                 }}
               />
             </Grid>
-            <Grid container item xs={2}>
+            <Grid container item xl={2} xs={4}>
               <TextField
                 label="Average Cost Per Share"
-                style={{ width: 270 }}
+                defaultValue=" "
                 id="avgCostPerShare"
                 variant="outlined"
                 onChange={(e) => {
@@ -119,15 +119,15 @@ function App() {
                 }}
               />
             </Grid>
-            <Grid container item xs={2} style={{}}>
+            <Grid container item xl={2} xs={4} style={{}}>
               Current Forward Yield = {currentForwardYield}
             </Grid>
           </Grid>
           <Grid container style={{ padding: 5 }}>
-            <Grid container item xs={2}>
+            <Grid container item xl={2} xs={4}>
               <TextField
                 label="Scrip Issue Price"
-                style={{ width: 270 }}
+                defaultValue=" "
                 id="scripPrice"
                 variant="outlined"
                 onChange={(e) => {
@@ -137,10 +137,10 @@ function App() {
             </Grid>
           </Grid>
           <Grid container style={{ padding: 5 }}>
-            <Grid container item xs={2}>
+            <Grid container item xl={2} xs={4}>
               <TextField
                 label="Declared Dividend Per Share"
-                style={{ width: 270 }}
+                defaultValue=" "
                 id="DPS"
                 variant="outlined"
                 onChange={(e) => {
