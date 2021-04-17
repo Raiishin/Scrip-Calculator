@@ -119,7 +119,7 @@ function App() {
                 }}
               />
             </Grid>
-            <Grid container item xl={2} xs={4} style={{}}>
+            <Grid container item xl={2} xs={4}>
               Current Forward Yield = {currentForwardYield}
             </Grid>
           </Grid>
