@@ -14,7 +14,6 @@ const {
 const { calculateAvgScripCost, calculateYield, calculateNewAvgCost } = require("./logic/helpers");
 
 function App() {
-  const [render, setRender] = useState(false);
   const [expectedForwardDPS, setExpectedForwardDPS] = useState(0);
   const [sharesOutstanding, setSharesOutstanding] = useState(0);
   const [avgCostPerShare, setAvgCostPerShare] = useState(0);
@@ -48,6 +47,8 @@ function App() {
   }
 
   const calculateNumberOfSharesForScrip = () => {
+    const arr = [];
+
     for (let i = 0.5; i <= 100; i = i + 0.5) {
       let scripShares = Math.round(i); // Number is rounded up
       let sharesForScrip = Math.round((i * scripPrice) / DPS);
@@ -60,8 +61,7 @@ function App() {
       // Calculate New Values
       let newAvgCostPerShare = calculateNewAvgCost(avgCostPerShare, sharesOutstanding, scripCost, scripShares);
       let newForwardYield = calculateYield(expectedForwardDPS, newAvgCostPerShare);
-
-      rows.push(
+      arr.push(
         createData(
           i,
           scripShares,
@@ -75,6 +75,7 @@ function App() {
         )
       );
     }
+    setRows(arr);
   };
 
   return (
@@ -157,7 +158,6 @@ function App() {
                 console.log(expectedForwardDPS, sharesOutstanding, scripPrice, DPS);
                 setCurrentForwardYield(calculateYield(expectedForwardDPS, avgCostPerShare));
                 calculateNumberOfSharesForScrip();
-                setRender(true);
               }}
             >
               Render Table
