@@ -131,7 +131,7 @@ function App() {
           <Grid container style={{ padding: 5 }}>
             <Grid container item xl={2} xs={4}>
               <TextField
-                label="Expected Forward DPS (Annual)"
+                label="Expected Annual Dividend"
                 defaultValue=" "
                 id="expectedForwardDPS"
                 variant="outlined"
@@ -144,7 +144,7 @@ function App() {
           <Grid container style={{ padding: 5 }}>
             <Grid container item xl={2} xs={4}>
               <TextField
-                label="Shares Currently Held"
+                label="Current Amount of Shares"
                 defaultValue=" "
                 id="sharesOutstanding"
                 variant="outlined"
@@ -155,7 +155,7 @@ function App() {
             </Grid>
             <Grid container item xl={2} xs={4}>
               <TextField
-                label="Average Cost Per Share"
+                label="Current Average Cost Per Share"
                 defaultValue=" "
                 id="avgCostPerShare"
                 variant="outlined"
@@ -165,7 +165,7 @@ function App() {
               />
             </Grid>
             <Grid container item xl={2} xs={4}>
-              Current Forward Yield = {currentForwardYield}
+              Current Cost Yield = {currentForwardYield}
             </Grid>
           </Grid>
           <Grid container style={{ padding: 5 }}>
@@ -239,7 +239,7 @@ function App() {
                 console.log(rows);
               }}
             >
-              Render Table
+              Show Me My Scrips
             </Button>
           </Grid>
 
