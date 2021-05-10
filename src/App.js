@@ -12,14 +12,18 @@ const {
   TableFooter,
   TablePagination,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } = require("@material-ui/core");
-const { calculateAvgScripCost, calculateYield, calculateNewAvgCost } = require("./logic/helpers");
+const { calculateAvgScripCost, calculateYield, calculateNewAvgCost, validate } = require("./logic/helpers");
 
 function App() {
   const [expectedForwardDPS, setExpectedForwardDPS] = useState(0);
   const [sharesOutstanding, setSharesOutstanding] = useState(0);
   const [avgCostPerShare, setAvgCostPerShare] = useState(0);
-  // const [currentForwardYield, setCurrentForwardYield] = useState(0);
   const [scripPrice, setScripPrice] = useState(0);
   const [DPS, setDPS] = useState(0);
   const [roundOff, setRoundOff] = useState(0.5);
@@ -31,6 +35,16 @@ function App() {
   const [paginationView, setPaginationView] = useState(false);
   const [flag1, setFlag1] = useState(false);
   const [flag2, setFlag2] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleButtonClick = (flag) => {
     if (flag === "flag1") {
@@ -162,9 +176,6 @@ function App() {
                 }}
               />
             </Grid>
-            {/* <Grid container item xl={2} xs={3} style={{ alignContent: "center" }}>
-              Current Cost Yield = {currentForwardYield}
-            </Grid> */}
           </Grid>
           <Grid container style={{ padding: 5 }}>
             <Grid container item xl={2} xs={4}>
@@ -221,23 +232,55 @@ function App() {
               </Button>
             </Grid>
           </Grid>
-
           <Grid container style={{ padding: 5 }}>
             <Button
               variant="contained"
               color="primary"
               onClick={() => {
-                console.log(expectedForwardDPS, sharesOutstanding, scripPrice, DPS);
-                // setCurrentForwardYield(calculateYield(expectedForwardDPS, avgCostPerShare));
-                calculateNumberOfSharesForScrip(page, rowsPerPage);
-                setPaginationView(true);
+                if (validate(document.getElementById("expectedForwardDPS").value) === false) {
+                  handleClickOpen();
+                  setErrorMessage("Please input the Expected Annual Dividend");
+                } else if (validate(document.getElementById("sharesOutstanding").value) === false) {
+                  handleClickOpen();
+                  setErrorMessage("Please input the Current Amount of Shares");
+                } else if (validate(document.getElementById("avgCostPerShare").value) === false) {
+                  handleClickOpen();
+                  setErrorMessage("Please input the Current Average Cost Per Share");
+                } else if (validate(document.getElementById("scripPrice").value) === false) {
+                  handleClickOpen();
+                  setErrorMessage("Please input the Scrip Issue Price");
+                } else if (validate(document.getElementById("DPS").value) === false) {
+                  handleClickOpen();
+                  setErrorMessage("Please input the Declared Dividend Per Share");
+                } else {
+                  console.log(expectedForwardDPS, sharesOutstanding, scripPrice, DPS);
+                  calculateNumberOfSharesForScrip(page, rowsPerPage);
+                  setPaginationView(true);
 
-                console.log(rows);
+                  console.log(rows);
+                }
               }}
             >
               Show Me My Scrips
             </Button>
           </Grid>
+
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Missing Input"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">{errorMessage}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary" autoFocus>
+                Okay
+              </Button>
+            </DialogActions>
+          </Dialog>
 
           <Grid container style={{ padding: 5 }}>
             <Grid container>
@@ -261,8 +304,12 @@ function App() {
                         <TableCell align="center">{row.sharesForScrip}</TableCell>
                         {roundOffView ? <TableCell align="center">{row.roundUp}</TableCell> : ""}
                         <TableCell align="center">{row.avgScripShareCost}</TableCell>
-                        <TableCell align="center">{row.scripCostYield}</TableCell>
-                        <TableCell align="center">{row.newForwardYield}</TableCell>
+                        <TableCell align="center" style={{ fontWeight: "bold" }}>
+                          {row.scripCostYield}
+                        </TableCell>
+                        <TableCell align="center" style={{ fontWeight: "bold" }}>
+                          {row.newForwardYield}
+                        </TableCell>
                         <TableCell align="center">{row.netCash}</TableCell>
                       </TableRow>
                     ))}

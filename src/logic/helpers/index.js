@@ -10,3 +10,8 @@ export const calculateNewAvgCost = (avgCostPerShare, sharesOutstanding, scripCos
   const totalShares = parseInt(sharesOutstanding) + scripShares;
   return (totalCost / totalShares).toFixed(3);
 };
+
+export const validate = (content) => {
+  if (content !== " ") return true;
+  else return false;
+};
