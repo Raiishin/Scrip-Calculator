@@ -195,7 +195,7 @@ function App() {
             <Grid container item xs={2}></Grid>
             <Grid container item xs={8}>
               {loading ? (
-                <Table aria-label="simple table">
+                <Table stickyHeader aria-label="simple table">
                   <TableHead>
                     <TableRow>
                       <TableCell>Number of Scrip Shares</TableCell>
