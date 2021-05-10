@@ -19,7 +19,7 @@ function App() {
   const [expectedForwardDPS, setExpectedForwardDPS] = useState(0);
   const [sharesOutstanding, setSharesOutstanding] = useState(0);
   const [avgCostPerShare, setAvgCostPerShare] = useState(0);
-  const [currentForwardYield, setCurrentForwardYield] = useState(0);
+  // const [currentForwardYield, setCurrentForwardYield] = useState(0);
   const [scripPrice, setScripPrice] = useState(0);
   const [DPS, setDPS] = useState(0);
   const [roundOff, setRoundOff] = useState(0.5);
@@ -140,8 +140,6 @@ function App() {
                 }}
               />
             </Grid>
-          </Grid>
-          <Grid container style={{ padding: 5 }}>
             <Grid container item xl={2} xs={4}>
               <TextField
                 label="Current Amount of Shares"
@@ -164,9 +162,9 @@ function App() {
                 }}
               />
             </Grid>
-            <Grid container item xl={2} xs={4}>
+            {/* <Grid container item xl={2} xs={3} style={{ alignContent: "center" }}>
               Current Cost Yield = {currentForwardYield}
-            </Grid>
+            </Grid> */}
           </Grid>
           <Grid container style={{ padding: 5 }}>
             <Grid container item xl={2} xs={4}>
@@ -180,8 +178,6 @@ function App() {
                 }}
               />
             </Grid>
-          </Grid>
-          <Grid container style={{ padding: 5 }}>
             <Grid container item xl={2} xs={4}>
               <TextField
                 label="Declared Dividend Per Share"
@@ -232,7 +228,7 @@ function App() {
               color="primary"
               onClick={() => {
                 console.log(expectedForwardDPS, sharesOutstanding, scripPrice, DPS);
-                setCurrentForwardYield(calculateYield(expectedForwardDPS, avgCostPerShare));
+                // setCurrentForwardYield(calculateYield(expectedForwardDPS, avgCostPerShare));
                 calculateNumberOfSharesForScrip(page, rowsPerPage);
                 setPaginationView(true);
 
@@ -244,35 +240,30 @@ function App() {
           </Grid>
 
           <Grid container style={{ padding: 5 }}>
-            <Grid container item xs={2}></Grid>
-            <Grid container item xs={8}>
+            <Grid container>
               {loading ? (
                 <Table stickyHeader aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      <TableCell>Number of Scrip Shares</TableCell>
-                      {roundOffView ? <TableCell align="center">Rounded Up Scrip Shares</TableCell> : ""}
-                      <TableCell align="center">Number of Shares for Scrip</TableCell>
-                      <TableCell align="center">Cost</TableCell>
+                      <TableCell>Scrip Shares Entitlted</TableCell>
+                      <TableCell align="center">Share Quantity to Elect</TableCell>
+                      {roundOffView ? <TableCell align="center">Scrip Shares After Round Up/Down</TableCell> : ""}
                       <TableCell align="center">Average Cost per Scrip</TableCell>
-                      <TableCell align="center">Net Cash Dividends</TableCell>
-                      <TableCell align="center">Yield on Scrip Cost</TableCell>
-                      <TableCell align="center">New Average Cost per Share</TableCell>
-                      <TableCell align="center">New Forward Yield</TableCell>
+                      <TableCell align="center">Yield on Scrip Share</TableCell>
+                      <TableCell align="center">New Average Cost Yield per Share</TableCell>
+                      <TableCell align="center">Cash to be Received</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {rows.map((row) => (
                       <TableRow key={row.scripShares}>
                         <TableCell align="center">{row.scripShares}</TableCell>
-                        {roundOffView ? <TableCell align="center">{row.roundUp}</TableCell> : ""}
                         <TableCell align="center">{row.sharesForScrip}</TableCell>
-                        <TableCell align="center">{row.scripCost}</TableCell>
+                        {roundOffView ? <TableCell align="center">{row.roundUp}</TableCell> : ""}
                         <TableCell align="center">{row.avgScripShareCost}</TableCell>
-                        <TableCell align="center">{row.netCash}</TableCell>
                         <TableCell align="center">{row.scripCostYield}</TableCell>
-                        <TableCell align="center">{row.newAvgCostPerShare}</TableCell>
                         <TableCell align="center">{row.newForwardYield}</TableCell>
+                        <TableCell align="center">{row.netCash}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
