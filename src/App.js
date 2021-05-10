@@ -22,11 +22,25 @@ function App() {
   const [currentForwardYield, setCurrentForwardYield] = useState(0);
   const [scripPrice, setScripPrice] = useState(0);
   const [DPS, setDPS] = useState(0);
+  const [roundOff, setRoundOff] = useState(0.5);
+  const [roundOffView, setRoundOffView] = useState(true);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [paginationView, setPaginationView] = useState(false);
+  const [flag1, setFlag1] = useState(false);
+  const [flag2, setFlag2] = useState(false);
+
+  const handleButtonClick = (flag) => {
+    if (flag === "flag1") {
+      setFlag1(true);
+      setFlag2(false);
+    } else {
+      setFlag1(false);
+      setFlag2(true);
+    }
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -70,7 +84,7 @@ function App() {
     const count = (page * rowsPerPage) / 2;
     let limit = ((page + 1) * rowsPerPage) / 2;
 
-    for (let i = count + 0.5; i <= limit; i = i + 0.5) {
+    for (let i = count + roundOff; i <= limit; i = i + roundOff) {
       console.log("Start");
       let scripShares = Math.round(i); // Number is rounded up
       let sharesForScrip = Math.round((i * scripPrice) / DPS);
@@ -100,6 +114,12 @@ function App() {
 
     setRows(arr);
     setLoading(true);
+
+    if (roundOff === 0.5) {
+      setRoundOffView(true);
+    } else {
+      setRoundOffView(false);
+    }
   };
 
   return (
@@ -175,6 +195,38 @@ function App() {
             </Grid>
           </Grid>
           <Grid container style={{ padding: 5 }}>
+            <Grid item style={{ padding: 5 }}>
+              Round off to:
+            </Grid>
+            <Grid item style={{ padding: 5 }}>
+              <Button
+                variant={flag1 ? "contained" : "outlined"}
+                color="primary"
+                size="small"
+                onClick={() => {
+                  handleButtonClick("flag1");
+                  setRoundOff(0.5);
+                }}
+              >
+                0.5
+              </Button>
+            </Grid>
+            <Grid item style={{ padding: 5 }}>
+              <Button
+                variant={flag2 ? "contained" : "outlined"}
+                color="primary"
+                size="small"
+                onClick={() => {
+                  handleButtonClick("flag2");
+                  setRoundOff(1);
+                }}
+              >
+                1
+              </Button>
+            </Grid>
+          </Grid>
+
+          <Grid container style={{ padding: 5 }}>
             <Button
               variant="contained"
               color="primary"
@@ -199,7 +251,7 @@ function App() {
                   <TableHead>
                     <TableRow>
                       <TableCell>Number of Scrip Shares</TableCell>
-                      <TableCell align="center">Rounded Up Scrip Shares</TableCell>
+                      {roundOffView ? <TableCell align="center">Rounded Up Scrip Shares</TableCell> : ""}
                       <TableCell align="center">Number of Shares for Scrip</TableCell>
                       <TableCell align="center">Cost</TableCell>
                       <TableCell align="center">Average Cost per Scrip</TableCell>
@@ -213,7 +265,7 @@ function App() {
                     {rows.map((row) => (
                       <TableRow key={row.scripShares}>
                         <TableCell align="center">{row.scripShares}</TableCell>
-                        <TableCell align="center">{row.roundUp}</TableCell>
+                        {roundOffView ? <TableCell align="center">{row.roundUp}</TableCell> : ""}
                         <TableCell align="center">{row.sharesForScrip}</TableCell>
                         <TableCell align="center">{row.scripCost}</TableCell>
                         <TableCell align="center">{row.avgScripShareCost}</TableCell>
