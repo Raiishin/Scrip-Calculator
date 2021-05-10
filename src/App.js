@@ -9,7 +9,9 @@ const {
   TableRow,
   TableCell,
   TableBody,
+  TableFooter,
   TablePagination,
+  CircularProgress,
 } = require("@material-ui/core");
 const { calculateAvgScripCost, calculateYield, calculateNewAvgCost } = require("./logic/helpers");
 
@@ -21,8 +23,23 @@ function App() {
   const [scripPrice, setScripPrice] = useState(0);
   const [DPS, setDPS] = useState(0);
   const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
+  const [paginationView, setPaginationView] = useState(false);
 
-  function createData(
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+    calculateNumberOfSharesForScrip(newPage, rowsPerPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value));
+    setPage(0);
+    calculateNumberOfSharesForScrip(0, parseInt(event.target.value));
+  };
+
+  const createData = (
     scripShares,
     roundUp,
     sharesForScrip,
@@ -32,7 +49,7 @@ function App() {
     scripCostYield,
     newAvgCostPerShare,
     newForwardYield
-  ) {
+  ) => {
     return {
       scripShares,
       roundUp,
@@ -44,12 +61,17 @@ function App() {
       newAvgCostPerShare,
       newForwardYield,
     };
-  }
+  };
 
-  const calculateNumberOfSharesForScrip = () => {
+  const calculateNumberOfSharesForScrip = (page, rowsPerPage) => {
+    setLoading(false);
+
     const arr = [];
+    const count = (page * rowsPerPage) / 2;
+    let limit = ((page + 1) * rowsPerPage) / 2;
 
-    for (let i = 0.5; i <= 100; i = i + 0.5) {
+    for (let i = count + 0.5; i <= limit; i = i + 0.5) {
+      console.log("Start");
       let scripShares = Math.round(i); // Number is rounded up
       let sharesForScrip = Math.round((i * scripPrice) / DPS);
       let scripCost = parseFloat((sharesForScrip * DPS).toFixed(2));
@@ -75,7 +97,9 @@ function App() {
         )
       );
     }
+
     setRows(arr);
+    setLoading(true);
   };
 
   return (
@@ -157,7 +181,10 @@ function App() {
               onClick={() => {
                 console.log(expectedForwardDPS, sharesOutstanding, scripPrice, DPS);
                 setCurrentForwardYield(calculateYield(expectedForwardDPS, avgCostPerShare));
-                calculateNumberOfSharesForScrip();
+                calculateNumberOfSharesForScrip(page, rowsPerPage);
+                setPaginationView(true);
+
+                console.log(rows);
               }}
             >
               Render Table
@@ -167,36 +194,60 @@ function App() {
           <Grid container style={{ padding: 5 }}>
             <Grid container item xs={2}></Grid>
             <Grid container item xs={8}>
-              <Table aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Number of Scrip Shares</TableCell>
-                    <TableCell align="center">Rounded Up Scrip Shares</TableCell>
-                    <TableCell align="center">Number of Shares for Scrip</TableCell>
-                    <TableCell align="center">Cost</TableCell>
-                    <TableCell align="center">Average Cost per Scrip</TableCell>
-                    <TableCell align="center">Net Cash Dividends</TableCell>
-                    <TableCell align="center">Yield on Scrip Cost</TableCell>
-                    <TableCell align="center">New Average Cost per Share</TableCell>
-                    <TableCell align="center">New Forward Yield</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row) => (
-                    <TableRow key={row.scripShares}>
-                      <TableCell align="center">{row.scripShares}</TableCell>
-                      <TableCell align="center">{row.roundUp}</TableCell>
-                      <TableCell align="center">{row.sharesForScrip}</TableCell>
-                      <TableCell align="center">{row.scripCost}</TableCell>
-                      <TableCell align="center">{row.avgScripShareCost}</TableCell>
-                      <TableCell align="center">{row.netCash}</TableCell>
-                      <TableCell align="center">{row.scripCostYield}</TableCell>
-                      <TableCell align="center">{row.newAvgCostPerShare}</TableCell>
-                      <TableCell align="center">{row.newForwardYield}</TableCell>
+              {loading ? (
+                <Table aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Number of Scrip Shares</TableCell>
+                      <TableCell align="center">Rounded Up Scrip Shares</TableCell>
+                      <TableCell align="center">Number of Shares for Scrip</TableCell>
+                      <TableCell align="center">Cost</TableCell>
+                      <TableCell align="center">Average Cost per Scrip</TableCell>
+                      <TableCell align="center">Net Cash Dividends</TableCell>
+                      <TableCell align="center">Yield on Scrip Cost</TableCell>
+                      <TableCell align="center">New Average Cost per Share</TableCell>
+                      <TableCell align="center">New Forward Yield</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <TableRow key={row.scripShares}>
+                        <TableCell align="center">{row.scripShares}</TableCell>
+                        <TableCell align="center">{row.roundUp}</TableCell>
+                        <TableCell align="center">{row.sharesForScrip}</TableCell>
+                        <TableCell align="center">{row.scripCost}</TableCell>
+                        <TableCell align="center">{row.avgScripShareCost}</TableCell>
+                        <TableCell align="center">{row.netCash}</TableCell>
+                        <TableCell align="center">{row.scripCostYield}</TableCell>
+                        <TableCell align="center">{row.newAvgCostPerShare}</TableCell>
+                        <TableCell align="center">{row.newForwardYield}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      {paginationView ? (
+                        <TablePagination
+                          rowsPerPageOptions={[50, 250, 500, 1000]}
+                          count={100000}
+                          rowsPerPage={rowsPerPage}
+                          page={page}
+                          SelectProps={{
+                            inputProps: { "aria-label": "rows per page" },
+                            native: true,
+                          }}
+                          onChangePage={handleChangePage}
+                          onChangeRowsPerPage={handleChangeRowsPerPage}
+                        />
+                      ) : (
+                        <TableRow />
+                      )}
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              ) : (
+                <CircularProgress />
+              )}
             </Grid>
           </Grid>
         </Grid>
