@@ -10,33 +10,40 @@ const {
   TableCell,
   TableBody,
   TableFooter,
-  TablePagination,
   CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
 } = require("@material-ui/core");
-const { calculateAvgScripCost, calculateYield, calculateNewAvgCost, validate } = require("./logic/helpers");
+const { calculateAvgScripCost, calculateYield, calculateNewAvgCost, validate, createData } = require("./helpers");
+const { Pagination } = require("./modules/pagination");
+const { RoundOffButton } = require("./modules/roundOffButton");
+const { ErrorDialog } = require("./modules/errorDialog");
+const { RenderTableButton } = require("./modules/renderTableButton");
 
 function App() {
+  // User Inputs
   const [expectedForwardDPS, setExpectedForwardDPS] = useState(0);
   const [sharesOutstanding, setSharesOutstanding] = useState(0);
   const [avgCostPerShare, setAvgCostPerShare] = useState(0);
   const [scripPrice, setScripPrice] = useState(0);
   const [DPS, setDPS] = useState(0);
+
+  // Error Prompts
+  const [open, setOpen] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
+
+  // Round Off
   const [roundOff, setRoundOff] = useState(0.5);
   const [roundOffView, setRoundOffView] = useState(true);
+  const [flag1, setFlag1] = useState(true);
+  const [flag2, setFlag2] = useState(false);
+
+  // Data Rendering
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Pagination
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [paginationView, setPaginationView] = useState(false);
-  const [flag1, setFlag1] = useState(false);
-  const [flag2, setFlag2] = useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -48,9 +55,13 @@ function App() {
 
   const handleButtonClick = (flag) => {
     if (flag === "flag1") {
+      setRoundOff(0.5);
+
       setFlag1(true);
       setFlag2(false);
     } else {
+      setRoundOff(1);
+
       setFlag1(false);
       setFlag2(true);
     }
@@ -67,30 +78,6 @@ function App() {
     calculateNumberOfSharesForScrip(0, parseInt(event.target.value));
   };
 
-  const createData = (
-    scripShares,
-    roundUp,
-    sharesForScrip,
-    scripCost,
-    avgScripShareCost,
-    netCash,
-    scripCostYield,
-    newAvgCostPerShare,
-    newForwardYield
-  ) => {
-    return {
-      scripShares,
-      roundUp,
-      sharesForScrip,
-      scripCost,
-      avgScripShareCost,
-      netCash,
-      scripCostYield,
-      newAvgCostPerShare,
-      newForwardYield,
-    };
-  };
-
   const calculateNumberOfSharesForScrip = (page, rowsPerPage) => {
     setLoading(false);
 
@@ -99,7 +86,6 @@ function App() {
     let limit = ((page + 1) * rowsPerPage) / 2;
 
     for (let i = count + roundOff; i <= limit; i = i + roundOff) {
-      console.log("Start");
       let scripShares = Math.round(i); // Number is rounded up
       let sharesForScrip = Math.round((i * scripPrice) / DPS);
       let scripCost = parseFloat((sharesForScrip * DPS).toFixed(2));
@@ -201,86 +187,20 @@ function App() {
               />
             </Grid>
           </Grid>
-          <Grid container style={{ padding: 5 }}>
-            <Grid item style={{ padding: 5 }}>
-              Round off to:
-            </Grid>
-            <Grid item style={{ padding: 5 }}>
-              <Button
-                variant={flag1 ? "contained" : "outlined"}
-                color="primary"
-                size="small"
-                onClick={() => {
-                  handleButtonClick("flag1");
-                  setRoundOff(0.5);
-                }}
-              >
-                0.5
-              </Button>
-            </Grid>
-            <Grid item style={{ padding: 5 }}>
-              <Button
-                variant={flag2 ? "contained" : "outlined"}
-                color="primary"
-                size="small"
-                onClick={() => {
-                  handleButtonClick("flag2");
-                  setRoundOff(1);
-                }}
-              >
-                1
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid container style={{ padding: 5 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                if (validate(document.getElementById("expectedForwardDPS").value) === false) {
-                  handleClickOpen();
-                  setErrorMessage("Please input the Expected Annual Dividend");
-                } else if (validate(document.getElementById("sharesOutstanding").value) === false) {
-                  handleClickOpen();
-                  setErrorMessage("Please input the Current Amount of Shares");
-                } else if (validate(document.getElementById("avgCostPerShare").value) === false) {
-                  handleClickOpen();
-                  setErrorMessage("Please input the Current Average Cost Per Share");
-                } else if (validate(document.getElementById("scripPrice").value) === false) {
-                  handleClickOpen();
-                  setErrorMessage("Please input the Scrip Issue Price");
-                } else if (validate(document.getElementById("DPS").value) === false) {
-                  handleClickOpen();
-                  setErrorMessage("Please input the Declared Dividend Per Share");
-                } else {
-                  console.log(expectedForwardDPS, sharesOutstanding, scripPrice, DPS);
-                  calculateNumberOfSharesForScrip(page, rowsPerPage);
-                  setPaginationView(true);
 
-                  console.log(rows);
-                }
-              }}
-            >
-              Show Me My Scrips
-            </Button>
-          </Grid>
+          <RoundOffButton handleButtonClick={handleButtonClick} flag1={flag1} flag2={flag2} />
 
-          <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">{"Missing Input"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">{errorMessage}</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary" autoFocus>
-                Okay
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <Grid container style={{ padding: 5 }}>
+            <RenderTableButton
+              handleClickOpen={handleClickOpen}
+              setErrorMessage={setErrorMessage}
+              calculateNumberOfSharesForScrip={calculateNumberOfSharesForScrip}
+              setPaginationView={setPaginationView}
+              page={page}
+              rowsPerPage={rowsPerPage}
+            />
+            <ErrorDialog open={open} handleClose={handleClose} errorMessage={errorMessage}></ErrorDialog>
+          </Grid>
 
           <Grid container style={{ padding: 5 }}>
             <Grid container>
@@ -317,18 +237,12 @@ function App() {
                   <TableFooter>
                     <TableRow>
                       {paginationView ? (
-                        <TablePagination
-                          rowsPerPageOptions={[50, 250, 500, 1000]}
-                          count={100000}
+                        <Pagination
                           rowsPerPage={rowsPerPage}
                           page={page}
-                          SelectProps={{
-                            inputProps: { "aria-label": "rows per page" },
-                            native: true,
-                          }}
-                          onChangePage={handleChangePage}
-                          onChangeRowsPerPage={handleChangeRowsPerPage}
-                        />
+                          handleChangePage={handleChangePage}
+                          handleChangeRowsPerPage={handleChangeRowsPerPage}
+                        ></Pagination>
                       ) : (
                         <TableRow />
                       )}

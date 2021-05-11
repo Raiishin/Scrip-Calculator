@@ -15,3 +15,27 @@ export const validate = (content) => {
   if (content !== " ") return true;
   else return false;
 };
+
+export const createData = (
+  scripShares,
+  roundUp,
+  sharesForScrip,
+  scripCost,
+  avgScripShareCost,
+  netCash,
+  scripCostYield,
+  newAvgCostPerShare,
+  newForwardYield
+) => {
+  return {
+    scripShares,
+    roundUp,
+    sharesForScrip,
+    scripCost,
+    avgScripShareCost,
+    netCash,
+    scripCostYield,
+    newAvgCostPerShare,
+    newForwardYield,
+  };
+};
