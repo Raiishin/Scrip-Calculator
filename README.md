@@ -1,6 +1,7 @@
 # Scrip-Calculator
 
-A nodeJS calculator for when there are scrip shares being offered in place of cash dividends
+A nodeJS calculator for when there are scrip shares being offered in place of cash dividends\
+Live Version: https://raiishin.github.io/Scrip-Calculator/
 
 ## Built with Create React App
 
