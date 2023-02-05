@@ -1,6 +1,7 @@
 # Scrip-Calculator
 
-A nodeJS calculator for when there are scrip shares being offered in place of cash dividends\
+Introducing the Share Calculator for Scrip Shares, a powerful and user-friendly app built with Node.js. Say goodbye to complex calculations and manual tracking when dealing with scrip shares in place of cash dividends. This app simplifies the process by providing an easy-to-use platform that accurately calculates and tracks the value of your script shares. Whether you're a seasoned investor or just starting out, the Share Calculator for Script Shares is the perfect tool to help you stay on top of your investments.
+
 Live Version: https://raiishin.github.io/Scrip-Calculator/
 
 ## Built with Create React App
